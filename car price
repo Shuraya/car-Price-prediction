@@ -1,0 +1,17 @@
+library(plyr)
+library(readr)
+library(janitor)
+library(tidyr)
+library(dplyr)
+mydir = "car_data"
+myfiles = list.files(path=mydir, pattern="*.csv", full.names=TRUE)
+
+dat_csv = ldply(myfiles, read_csv)
+names(dat_csv)[names(dat_csv) == "tax(£)"] <- "tax2"
+clean<-clean_names(dat_csv)
+colnames(clean)
+
+dat_csv = dat_csv %>% mutate(taxes = coalesce(tax,tax2)) %>%
+select(model,year,price,transmission,mileage,fuelType,mpg,engineSize,taxes)
+attach(dat_csv)
+plot(year,price)
