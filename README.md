@@ -1,3 +1,3 @@
 # car-Price-prediction
-
+The purpose of this study is to predict the price of a second-hand Hyundai car and find the best model. Using a regression model, factor effect, interaction effect, two-way Anova, residual analysis, prediction interval, and confidence interval, this study analyzed 11 Hyundai car models between the registration year 2000 to 2020 and measured these results against a real second-hand car selling in the United Kingdom. The best model is predicted with 94% accuracy and the predicted price was approximate to the real second-hand car price. This study definitively answers the question regarding the prediction of Hyundai price and its best model. Further studies can be done to establish a better model by including all car models produced by the Hyundai brand. 
 
