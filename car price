@@ -15,3 +15,156 @@ dat_csv = dat_csv %>% mutate(taxes = coalesce(tax,tax2)) %>%
 select(model,year,price,transmission,mileage,fuelType,mpg,engineSize,taxes)
 attach(dat_csv)
 plot(year,price)
+
+dat_csv<-car_data
+car_data <- read.csv(file = 'hyundi.csv')  
+
+names(car_data) <- c('model', 'year', 'price', 'transmission', 'mileage', 'fuelType', 'tax', 'mpg', 'engineSize')  
+
+#Barplot model 
+
+ which(grepl("Accent", car_data$model))  
+
+ which(grepl("Amica", car_data$model))  
+
+ which(grepl("Terracan", car_data$model))  
+
+ which(grepl("Getz", car_data$model))  
+
+ which(grepl("Veloster", car_data$model))  
+
+car_data <- car_data[-c(4310, 4597, 4312, 4553, 4313, 4315, 4463, 4580, 4709, 4773)] 
+
+attach(car_data) 
+
+ 
+
+#For Historam & Bargraph(This will give color graph) 
+
+counts <- table(car_data$model) 
+
+hist(car_data$year, col="blue") 
+
+ barplot(counts, xlab= "Model",las=2, col=c("#eb8060", "#b9e38d", "#a1e9f0", "#d9b1f0")) 
+
+ counts1 <- table(car_data$transmission) 
+
+barplot(counts1, xlab= "Transmission",las=2, col=c("#eb8060", "#b9e38d", "#a1e9f0", "#d9b1f0")) 
+
+counts1 <- table(car_data$fuelType) 
+
+barplot(counts1, xlab= "fuelType",las=2, col=c("#eb8060", "#b9e38d", "#a1e9f0", "#d9b1f0")) 
+
+ 
+
+#ggplot for intial data 
+
+C1 <- data.frame(year,price,mileage, tax, mpg, engineSize) 
+
+pairs(C1) 
+
+library(ggplot2) 
+
+library(reshape2) 
+
+Dm <- melt(C1, id="price") 
+
+ggplot(Dm, aes(x = value, y = price, color= variable)) +  
+
+facet_wrap(~variable, scales = "free") +  geom_point() 
+
+cor(C1) 
+
+ 
+
+#test factor effect and interaction effect 
+
+F1 <- lm(price~factor(model)) 
+
+summary(F1) 
+
+anova(F1) #there is factor effect of model of car 
+
+F2 <- lm(price~ model+mileage+ model*mileage) 
+
+ anova(F2) #interaction effect between model and mileage is significant  
+
+#interaction plot 
+
+ jpeg("modelmileage.jpg", width=1200, height=800, pointsize=24) 
+
+interaction.plot( mileage, model,price) 
+
+dev.off() 
+
+table(mileage,model) 
+
+ 
+
+# Finding Best Model 
+
+#L2 <- lm(price ~ year+ mileage + tax + mpg +engineSize) 
+
+L1 <- lm(log(price) ~ ., data=car_data) 
+
+summary(L1) 
+
+L1 
+
+fit2 = lm(log(price) ~ ., data = car_data1) 
+
+fit2 = lm(log(price) ~ ., data = subset(car_data, price != 92000))  
+
+#plot(fit2) 
+
+summary(fit2) 
+
+fit4 = lm(log(price) ~ .+model*mileage, data = subset(car_data, price != 92000))#best model so far 
+
+summary(fit4) 
+
+anova(fit2,fit4) 
+
+AIC(fit2) 
+
+AIC(fit4) 
+
+#plot(fit4) 
+
+#chcek multicolineality  
+
+library(car) 
+
+vif(fit4) 
+
+ 
+
+#Predicting Price 
+
+predict(fit4, data.frame(model= " Tucson", year=2018, transmission ="Manual",mileage=41895,fuelType="Petrol",tax=155,mpg=44.8,engineSize=1.6),interval="confidence") 
+
+ predict(fit4, data.frame(model= " Tucson", year=2018, transmission ="Manual",mileage=41895,fuelType="Petrol",tax=155,mpg=44.8,engineSize=1.6),interval="prediction") 
+
+  
+
+#upper 
+
+exp(9.326649) 
+
+#exp(9.744538) 
+
+exp(9.535593) 
+
+
+
+which(grepl("Accent", car_data$model)) 
+
+which(grepl("Amica", car_data$model)) 
+
+which(grepl("Terracan", car_data$model)) 
+
+which(grepl("Getz", car_data$model)) 
+
+which(grepl("Velostar", car_data$model)) 
+
+car_data <- car_data[-c(4310, 4597, 4312, 4553, 4313, 4315, 4463, 4580, 4709, 4773),] 
